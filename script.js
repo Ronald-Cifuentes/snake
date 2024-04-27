@@ -84,7 +84,7 @@ function draw() {
 setInterval(function () {
     if (update()) {
         alert('Game Over!');
-        return;
+        resetGame(); // Reset the game
     }
     draw();
 }, 100);
@@ -101,3 +101,10 @@ document.addEventListener('keydown', function (event) {
         dir = 'right';
     }
 });
+
+// Reset the game
+function resetGame() {
+    snake = [[20, 20], [20, 21], [20, 22]];
+    food = [10, 10];
+    dir = 'right';
+}
