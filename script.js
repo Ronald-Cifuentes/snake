@@ -13,11 +13,19 @@ var food = [10, 10];
 // Set the snake direction
 var dir = 'right';
 
+// Set the points counter
+var points = 0;
+
 // Draw the game board
 function drawBoard() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = 'black';
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '24px Arial';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(`Points: ${points}`, 10, 10);
 }
 
 // Draw the snake
@@ -69,6 +77,7 @@ function update() {
     if (snake[0][0] == food[0] && snake[0][1] == food[1]) {
         snake.push([...snake[snake.length - 1]]);
         food = [Math.floor(Math.random() * (canvas.width / 10)), Math.floor(Math.random() * (canvas.height / 10))];
+        points += 100; // Add 100 points for each food eaten
     }
     return false; // Game not over
 }
@@ -107,4 +116,5 @@ function resetGame() {
     snake = [[20, 20], [20, 21], [20, 22]];
     food = [10, 10];
     dir = 'right';
+    points = 0; // Reset points to 0
 }
