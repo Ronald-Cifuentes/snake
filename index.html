@@ -4,9 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      #canvas {
+        display: block;
+        position: relative;
+        z-index: 1;
+      }
+    </style>
   </head>
   <body>
-    <canvas id="canvas"></canvas>
+    <div id="points-counter">Points: 0</div>
+    <div id="level-counter">Level: 0</div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <button id="start-button">Start</button>
+    <button id="reboot-button">Reboot</button>
+    <button id="stop-button">Stop</button>
     <script src="script.js"></script>
   </body>
 </html>

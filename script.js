@@ -1,20 +1,29 @@
+
+// Add event listeners for buttons
+document.getElementById('start-button').addEventListener('click', startGame);
+document.getElementById('stop-button').addEventListener('click', stopGame);
+document.getElementById('reboot-button').addEventListener('click', rebootGame);
+
 // Get the canvas element
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
+let canvas = document.getElementById('canvas');
+let ctx = canvas.getContext('2d');
+let intervalId = null;
+let level = 1;
+let speed = 100; // initial speed
 
 // Set the canvas dimensions
 canvas.width = 400;
 canvas.height = 400;
 
 // Set the snake and food positions
-var snake = [[20, 20], [20, 21], [20, 22]];
-var food = [10, 10];
+let snake = [[20, 20], [20, 21], [20, 22]];
+let food = [10, 10];
 
 // Set the snake direction
-var dir = 'right';
+let dir = 'right';
 
 // Set the points counter
-var points = 0;
+let points = 0;
 
 // Draw the game board
 function drawBoard() {
@@ -25,13 +34,13 @@ function drawBoard() {
     ctx.fillStyle = 'black';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    ctx.fillText(`Points: ${points}`, 10, 10);
 }
+drawBoard()
 
 // Draw the snake
 function drawSnake() {
     ctx.fillStyle = 'green';
-    for (var i = 0; i < snake.length; i++) {
+    for (let i = 0; i < snake.length; i++) {
         ctx.fillRect(snake[i][0] * 10, snake[i][1] * 10, 10, 10);
     }
 }
@@ -45,7 +54,7 @@ function drawFood() {
 // Update the game state
 function update() {
     // Move the snake
-    for (var i = snake.length - 1; i > 0; i--) {
+    for (let i = snake.length - 1; i > 0; i--) {
         snake[i] = [...snake[i - 1]];
     }
     if (dir == 'right') {
@@ -67,7 +76,7 @@ function update() {
     ) {
         return true; // Game Over
     }
-    for (var i = 1; i < snake.length; i++) {
+    for (let i = 1; i < snake.length; i++) {
         if (snake[0][0] == snake[i][0] && snake[0][1] == snake[i][1]) {
             return true; // Game Over
         }
@@ -82,21 +91,25 @@ function update() {
     return false; // Game not over
 }
 
+// Update points counter outside of canvas
+// speed control
+function updatePointsCounter() {
+    document.getElementById('points-counter').innerText = `Points: ${points}`;
+    if (points >= level * 1000) {
+        level++;
+        speed *= 1.1; // increase speed by 10% each level
+    }
+    document.getElementById('level-counter').innerText = `Level: ${level}`;
+}
+
+
 // Draw the game
 function draw() {
     drawBoard();
     drawSnake();
     drawFood();
+    updatePointsCounter()
 }
-
-// Update and draw the game at 10fps
-setInterval(function () {
-    if (update()) {
-        alert('Game Over!');
-        resetGame(); // Reset the game
-    }
-    draw();
-}, 100);
 
 // Handle key presses
 document.addEventListener('keydown', function (event) {
@@ -109,6 +122,16 @@ document.addEventListener('keydown', function (event) {
     } else if (event.key == 'ArrowRight' && dir != 'left') {
         dir = 'right';
     }
+    // Add the new conditions here
+    if (event.key == 'Escape') {
+        resetGame();
+    }
+    if (event.key == 'Enter') {
+        startGame();
+    }
+    if (event.key == ' ') {
+        stopGame();
+    }
 });
 
 // Reset the game
@@ -116,5 +139,49 @@ function resetGame() {
     snake = [[20, 20], [20, 21], [20, 22]];
     food = [10, 10];
     dir = 'right';
+    points = 0;
+    speed = 100;
+    level = 1;
+}
+
+// Stop game function
+function stopGame() {
+    // Clear the interval
+    clearInterval(intervalId);
+    intervalId = null;
+}
+
+// Reboot game function
+function rebootGame() {
+    stopGame(); // Stop the existing game loop
+    resetGame();
+    startGame();// Start a new game loop
+}
+
+// Reset game function (unchanged)
+function resetGame() {
+    snake = [[20, 20], [20, 21], [20, 22]];
+    food = [10, 10];
+    dir = 'right';
     points = 0; // Reset points to 0
+}
+
+
+// Start game function
+function startGame() {
+
+    if (intervalId) {
+        clearInterval(intervalId);
+    }
+
+    // Start game loop
+    // Update and draw the game at 10fps
+    intervalId = setInterval(function () {
+        if (update()) {
+            alert('Game Over!');
+            resetGame(); // Reset the game
+        }
+        draw();
+    }, speed);
+
 }
